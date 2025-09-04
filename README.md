@@ -4,7 +4,7 @@ A lightweight query execution engine prototype that demonstrates how different q
 
 ---
 
-##  Features
+## Features
 
 - **JSON-based Query Specifications**  
   Define tables, filters, joins, and projections via JSON format.
@@ -22,7 +22,7 @@ A lightweight query execution engine prototype that demonstrates how different q
 
 ---
 
-##  Query Execution Flow
+## Query Execution Flow
 
 1. **Input**: JSON spec defining:
    - Tables (CSV paths)
@@ -45,52 +45,9 @@ A lightweight query execution engine prototype that demonstrates how different q
 
 ---
 
-##  Example JSON Query Spec
-
-```json
-{
-  "tables": {
-    "customers": "data/customers.csv",
-    "orders": "data/orders.csv"
-  },
-  "filters": {
-    "customers": { "country": "US" },
-    "orders": { "status": "PAID" }
-  },
-  "joins": [
-    {
-      "left": "customers",
-      "right": "orders",
-      "on": ["id", "customer_id"]
-    }
-  ],
-  "select": ["customers.id", "customers.name", "orders.amount"]
-}
-
 ## Installation
 
 ```bash
 git clone https://github.com/ishagolakiya6101/distributed-query-optimizer.git
 cd distributed-query-optimizer
 pip install -r requirements.txt
-
-## Usage
-
-python run_demo.py \
-  --query examples/query1.json \
-  --plan heuristic \
-  --explain
-
-
-## Project Structure
-
-distributed-query-optimizer/
-│── data/            # Sample CSV datasets
-│── examples/        # Example JSON query specs
-│── dqo/
-│   │── planner.py   # Naive / heuristic / AI planning logic
-│   │── executor.py  # Execution engine
-│   │── utils.py     # Helper functions
-│── run_demo.py      # CLI entrypoint
-│── requirements.txt # Required dependencies
-│── README.md        # Project documentation (this file)
