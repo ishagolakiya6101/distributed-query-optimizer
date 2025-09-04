@@ -1,0 +1,8 @@
+[project]
+name = "dqo-mini"
+version = "0.1.0"
+description = "Distributed Query Optimizer (Mini Database Engine) — MVP"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{name = "You", email = "you@example.com"}]
+dependencies = ["pandas"]
