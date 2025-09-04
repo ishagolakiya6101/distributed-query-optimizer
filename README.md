@@ -1,113 +1,96 @@
-🗂️ Distributed Query Optimizer (DQO-Mini)
+# Distributed Query Optimizer (DQO-Mini)
 
-A lightweight distributed query optimizer prototype that demonstrates how different query execution strategies (Naive, Heuristic, and optional AI-based) affect performance.
-It operates on CSV-based datasets using pandas and simulates query planning similar to modern database optimizers.
+A lightweight query execution engine prototype that demonstrates how different query planning strategies—Naive, Heuristic, and optionally AI-based—affect performance. Works on CSV datasets using `pandas`, simulating aspects of modern database optimizers.
 
-🚀 Features
+---
 
-JSON-based Query Specs
-Define tables, filters, joins, and projections in a simple JSON format.
+##  Features
 
-Predicate Pushdown
-Applies filters before joins to reduce intermediate table sizes.
+- **JSON-based Query Specifications**  
+  Define tables, filters, joins, and projections via JSON format.
 
-Multiple Planning Strategies
+- **Predicate Pushdown**  
+  Applies filters before joins to shrink intermediate results.
 
-Naive Plan: Executes joins in the specified order.
+- **Planning Strategies**  
+  - **Naive Plan**: Executes joins in specified order.  
+  - **Heuristic Plan**: Reorders joins based on estimated filtered sizes to improve efficiency.  
+  - **AI Plan (Optional)**: Uses a trained ML model to predict the optimal join plan.
 
-Heuristic Plan: Reorders joins based on estimated filtered sizes.
+- **Explain Mode**  
+  Outputs intermediate table sizes, join order decisions, and other execution details for debugging and analysis.
 
-AI Plan (Optional): Uses a trained ML model to predict the best plan.
+---
 
-Explain Plan
-Shows intermediate table sizes, chosen join orders, and other insights.
+##  Query Execution Flow
 
-🔄 Query Execution Flow
+1. **Input**: JSON spec defining:
+   - Tables (CSV paths)
+   - Filters
+   - Join relationships
+   - Output projection
 
-Input Query Spec (JSON)
+2. **Load Tables**: Imports CSVs into `pandas` DataFrames.
 
-Defines tables, filters, joins, and projection.
+3. **Predicate Pushdown**: Stores data volume and reduces join input sizes pre-join.
 
-Load Tables
+4. **Plan Generation**:
+   - **Naive**: Executes joins sequentially as specified.
+   - **Heuristic**: Reorders joins strategically based on estimated sizes.
+   - **AI**: Optionally applies ML model to predict best plan (if available).
 
-CSVs are read into pandas DataFrames.
+5. **Execution**: Performs joins following chosen plan and applies final projection.
 
-Predicate Pushdown
+6. **Explain (Optional)**: Reports key intermediate stats and join ordering.
 
-Filters applied before joins to shrink table sizes.
+---
 
-Plan Generation
+##  Example JSON Query Spec
 
-Naive Plan: executes joins in given order.
-
-Heuristic Plan: reorders joins based on estimated filtered sizes.
-
-AI Plan (optional): uses trained ML model to predict best plan.
-
-Execution
-
-Joins are executed according to chosen plan.
-
-Results are projected to selected columns.
-
-Explain Plan (Optional)
-
-Prints table sizes after filtering, and join orders chosen.
-
-📊 Example Query Spec
+```json
 {
   "tables": {
     "customers": "data/customers.csv",
     "orders": "data/orders.csv"
   },
   "filters": {
-    "customers": {"country": "US"},
-    "orders": {"status": "PAID"}
+    "customers": { "country": "US" },
+    "orders": { "status": "PAID" }
   },
   "joins": [
-    {"left": "customers", "right": "orders", "on": ["id", "customer_id"]}
+    {
+      "left": "customers",
+      "right": "orders",
+      "on": ["id", "customer_id"]
+    }
   ],
   "select": ["customers.id", "customers.name", "orders.amount"]
 }
 
-⚙️ Installation
-git clone https://github.com/your-username/dqo-mini.git
-cd dqo-mini
+## Installation
+
+```bash
+git clone https://github.com/ishagolakiya6101/distributed-query-optimizer.git
+cd distributed-query-optimizer
 pip install -r requirements.txt
 
-▶️ Usage
+## Usage
 
-Run a query:
+python run_demo.py \
+  --query examples/query1.json \
+  --plan heuristic \
+  --explain
 
-python main.py --query examples/query1.json --plan heuristic --explain
 
+## Project Structure
 
---query: Path to JSON query spec
-
---plan: naive, heuristic, or ai
-
---explain: Show intermediate steps and join order
-
-📂 Project Structure
-dqo-mini/
-│── data/               # Sample CSV datasets
-│── examples/           # Example JSON query specs
-│── optimizer/          # Query optimizer logic
-│   │── planner.py      # Naive / heuristic / AI planners
-│   │── executor.py     # Execution engine
-│   │── utils.py        # Helper functions
-│── main.py             # Entry point
-│── requirements.txt    # Dependencies
-│── README.md           # Project documentation
-
-🛠️ Roadmap / Future Work
-
- Add cost-based optimizer with statistics collection.
-
- Support more join algorithms (hash join, sort-merge join).
-
- Extend beyond CSV to SQL/Parquet backends.
-
- Improve AI planner with reinforcement learning.
-
- Add benchmarking scripts.
+distributed-query-optimizer/
+│── data/            # Sample CSV datasets
+│── examples/        # Example JSON query specs
+│── dqo/
+│   │── planner.py   # Naive / heuristic / AI planning logic
+│   │── executor.py  # Execution engine
+│   │── utils.py     # Helper functions
+│── run_demo.py      # CLI entrypoint
+│── requirements.txt # Required dependencies
+│── README.md        # Project documentation (this file)
